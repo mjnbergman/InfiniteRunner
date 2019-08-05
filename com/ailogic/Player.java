@@ -13,14 +13,16 @@ import java.awt.Graphics2D;
  *
  */
 public class Player {
+	
+	protected Color c = Color.RED;
 
-	private int x;
-	private int y;
+	protected int x;
+	protected int y;
 	
-	private int width;
-	private int height;
+	protected int width;
+	protected int height;
 	
-	private double velocity;
+	protected double velocity;
 	
 	public Player(int x, int y, int width, int height) {
 		this.x = x;
@@ -29,15 +31,40 @@ public class Player {
 		this.height = height;
 	}
 	
-	public void updateVelocity(double velocity) {
+	public int getX() {
+		return this.x;
+	}
+	public int getY() {
+		return this.y;
+	}
+	public int getWidth() {
+		return this.width;
+	}
+	public int getHeight() {
+		return this.height;
+	}
+	
+	public void updateVelocity(double velocity, double groundHeight) {
+		
+		if(this.y < groundHeight) {
+			return;
+		}
+		
 		this.velocity += velocity;
 	}
-	public void update() {
+	public void update(double groundHeight) {
+		
+		if(this.velocity > 0 && this.y + velocity > groundHeight) {
+			this.velocity = 0;
+			this.y = (int)groundHeight;
+		}
+		
 		this.y += this.velocity;
+		this.velocity += (this.y < groundHeight ? 0.2 : 0);
 	}
 	
 	public void draw(Graphics2D g2d) {
-		g2d.setColor(Color.RED);
+		g2d.setColor(this.c);
 		g2d.fillRect(this.x, this.y, this.width, this.height);
 	}
 }
