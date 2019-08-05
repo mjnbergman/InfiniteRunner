@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JPanel;
 
@@ -41,11 +42,17 @@ public class GraphicsPanel extends JPanel{
 		g2d.setColor(Color.BLACK);
 		g2d.fillRect(0, this.getHeight()/2, this.getWidth(), this.getHeight()/20);
 		
+		g2d.drawString("Score: " + this.score, 100, 100);
+		
 		// Hit checking
 		
 		boolean killIt = false;
 		
-		for(DeathPole dp : this.poles) {
+		Iterator<DeathPole> it = this.poles.iterator();
+		
+		while(it.hasNext()) {
+			
+			DeathPole dp = it.next();
 			
 			if(touchesPlayer(dp)) {
 				killIt = true;
@@ -53,6 +60,16 @@ public class GraphicsPanel extends JPanel{
 			
 			dp.update();
 			dp.draw(g2d);
+			
+			// Score updaten als je een pole passeert
+			if(dp.getX() + dp.getWidth() < p1.getX() && !dp.passed) {
+				score++;
+				dp.passed = true;
+			}
+			
+			if(dp.getX() + dp.getWidth() < 0) {
+				it.remove();
+			}
 		}
 		
 		p1.update(this.getHeight()/2 - 100);

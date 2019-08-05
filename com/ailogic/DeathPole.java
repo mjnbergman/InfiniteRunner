@@ -13,6 +13,8 @@ import java.awt.Graphics2D;
  *
  */
 public class DeathPole extends Player{
+	
+	public boolean passed = false;
 
 	public DeathPole(int x, int y, int width, int height) {
 		super(x, y, width, height);
