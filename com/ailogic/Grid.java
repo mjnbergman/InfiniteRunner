@@ -22,4 +22,10 @@ public class Grid extends AbstractGrid{
 		return false;
 	}
 
+	@Override
+	public int getReward(int initialState, int initialAction) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
 }

@@ -115,7 +115,7 @@ public abstract class AbstractGrid {
 		
 		// Obtain immediate reward
 		
-		int immediateReward = this.grid[initialState][newLocation];
+		int immediateReward = getReward(initialState, action);
 		
 		System.out.println("De immediate reward is: " + immediateReward);
 		
@@ -160,6 +160,15 @@ public abstract class AbstractGrid {
 	/*
 	 * These abstract methods have to be implemented by subclasses.
 	 */
+	
+	/**
+	 * 
+	 * @param initialState an integer representing the state from which an action is taken
+	 * @param initialAction an integer representing the taken action
+	 * @return an integer value representing the reward (or punishment if it is negative) obtained from
+	 * the environment for performing @code(initialAction) from @code(initialState).
+	 */
+	public abstract int getReward(int initialState, int initialAction);
 	
 	/**
 	 * 
