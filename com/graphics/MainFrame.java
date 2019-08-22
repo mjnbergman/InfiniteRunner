@@ -39,7 +39,7 @@ public class MainFrame {
 				if(arg0.getKeyCode() == arg0.VK_UP) {
 					
 					if(!pressing) {
-						gp.upEvent();
+						gp.playerUpEvent();
 					}
 					pressing = true;
 					

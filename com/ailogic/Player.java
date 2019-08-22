@@ -44,6 +44,10 @@ public class Player {
 		return this.height;
 	}
 	
+	public boolean isFlying(double groundHeight) {
+		return (this.y < groundHeight);
+	}
+	
 	public void updateVelocity(double velocity, double groundHeight) {
 		
 		if(this.y < groundHeight) {

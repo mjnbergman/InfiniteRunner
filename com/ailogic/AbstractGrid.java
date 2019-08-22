@@ -19,6 +19,7 @@ public abstract class AbstractGrid {
 	int[][] qGrid;
 	
 	double gamma = 0.8;
+	double explorationRate = 1.0;
 	
 	public AbstractGrid() {
 		
@@ -75,12 +76,15 @@ public abstract class AbstractGrid {
 	 * A method that does a training episode for the Q-table. Subclasses should override the
 	 * @code(isActionLegal) and @code(getStateActionMap) methods instead of this one. 
 	 * This method takes random legal actions from the initialState until it gets to a terminating state
-	 * and updates the Q-table accordingly while doing so.
+	 * and updates the Q-table accordingly while doing so. (But it is not recursive or looping in itself,
+	 * that is done outside this method).
 	 * 
 	 * @param initialState an integer representing the initialState from which to start
 	 * this training episode.
+	 * 
+	 * @return an integer representing the action to be taken
 	 */
-	public void trainIteration(int initialState) {
+	public int trainIteration(int initialState) {
 		
 		if(initialState == -1) {
 			initialState = (int)(Math.random() * this.rows);
@@ -90,17 +94,25 @@ public abstract class AbstractGrid {
 		boolean actionChosen = false;
 		int action = -1;
 		
+		double check = Math.random();
+		
+		if(check > explorationRate) {
+			action = getOptimalAction(initialState);
+		}else {
+			while(!actionChosen) {
+				action = (int)(Math.random() * this.columns);
+				if(!isActionLegal(initialState, action)) {
+					continue;
+				}else {
+					actionChosen = true;
+				}
+				
+			}
+		}
+		
 		// Check if action legal
 		
-		while(!actionChosen) {
-			action = (int)(Math.random() * this.columns);
-			if(!isActionLegal(initialState, action)) {
-				continue;
-			}else {
-				actionChosen = true;
-			}
-			
-		}
+
 		
 		System.out.println("Training iteration! Chosen initialState: " + initialState + " and action: " + action);
 		
@@ -122,11 +134,9 @@ public abstract class AbstractGrid {
 		// Update Q-table
 		
 		int totalReward = (int)(immediateReward + this.gamma * recurseReward(newLocation));
-		this.qGrid[initialState][newLocation] = totalReward;
+		this.qGrid[initialState][action] = totalReward;
 		
-		if(this.grid[initialState][newLocation] != 100 && this.grid[initialState][newLocation] != -500) {
-			trainIteration(newLocation);
-		}
+		return action;
 	}
 	
 
@@ -148,8 +158,8 @@ public abstract class AbstractGrid {
 	//			int pNewColumns = potNewState % (int)Math.sqrt(this.rows);
 	//			int pNewRows = (potNewState - pNewColumns)/(int)Math.sqrt(this.rows);
 				
-				if(this.qGrid[initialState][potNewState] > maxValue) {
-					maxValue = this.qGrid[initialState][potNewState];
+				if(this.qGrid[initialState][action] > maxValue) {
+					maxValue = this.qGrid[initialState][action];
 				}
 			}
 		}
@@ -220,6 +230,19 @@ public abstract class AbstractGrid {
 		}
 		
 
+	}
+	public int getOptimalAction(int initialState) {
+		int maxReward = -100000;
+		int action = 0;
+		
+		for(int j = 0; j < this.columns; j++) {
+			if(this.qGrid[initialState][j] > maxReward) {
+				maxReward = this.qGrid[initialState][j];
+				action = j;
+			}
+		}
+		
+		return action;
 	}
 	
 }
